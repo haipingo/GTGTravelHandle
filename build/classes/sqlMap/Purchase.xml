@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="purchase">
+	<sql id="queryDataFilter">
+		<!--出发站编码-->
+	 	<isNotEmpty prepend="and" property="id">
+			id=#id#
+		</isNotEmpty>
+	
+		<!--出发站编码-->
+	 	<isNotEmpty prepend="and" property="departureStation">
+			areaDepot=#departureStation#
+		</isNotEmpty>
+		
+		<!--到达站编码-->
+		<isNotEmpty prepend="and" property="destinationStation">
+			stationData like CONCAT('%',#destinationStation#,'%' )  
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="and"  property="departureDate">
+			SUBSTRING(TIME,1,10)=#departureDate#
+		</isNotEmpty>
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	<!--2.查询临时表中的数据，根据表名，来源系统名称分出实体-->
+	<insert  id="addTicketInfo"  parameterClass="java.util.HashMap"> 
+		INSERT INTO tab_order 
+			(
+			createtime, 
+			sydepStation, 
+			sydesStation, 
+			szTime, 
+			szTelephone, 
+			state, 
+			stateCode, 
+			dbBaf, 
+			dbFare, 
+			szAntiCode, 
+			szAreaDepot, 
+			szBarCode, 
+			szCName, 
+			szDate, 
+			szFareType, 
+			szIDCard, 
+			szLocalDepot, 
+			szNo, 
+			szOldBarCode, 
+			szOrderid, 
+			szOwnerDepot, 
+			szSeats, 
+			szStCode, 
+			szStaffCode, 
+			szType, 
+			syorderId, 
+			syOdAddress, 
+			syBusRide, 
+			syumbers, 
+			syAmount, 
+			szEntry, 
+			confirmBarCode, 
+			isRead, 
+			NAME, 
+			pwd, 
+			LEVEL, 
+			szStop, 
+			addChildren, 
+			refundDate
+			)
+		VALUES
+			(
+			sysdate(), 
+			#sydepStation#, 
+			#sydesStation#, 
+			#szTime#, 
+			#szTelephone#, 
+			'未支付', 
+			'0002',
+			#dbBaf#, 
+			#dbFare#, 
+			#szAntiCode#, 
+			#szAreaDepot#, 
+			#szBarCode#, 
+			#szCName#, 
+			#szDate#, 
+			#szFareType#, 
+			#szIDCard#, 
+			#szLocalDepot#, 
+			#szNo#, 
+			#szOldBarCode#, 
+			#szOrderid#, 
+			#szOwnerDepot#, 
+			#szSeats#, 
+			#szStCode#, 
+			#szStaffCode#, 
+			#szType#, 
+			#syorderId#, 
+			#syOdAddress#, 
+			#syBusRide#, 
+			#syumbers#, 
+			#syAmount#, 
+			#szEntry#, 
+			#confirmBarCode#, 
+			#isRead#, 
+			#name#, 
+			#pwd#, 
+			#level#, 
+			#szStop#, 
+			#addChildren#, 
+			#refundDate#
+			)
+	</insert>
+</sqlMap>

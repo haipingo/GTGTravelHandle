@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xsi:schemaLocation="   
+           http://www.springframework.org/schema/beans   
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd   
+           http://www.springframework.org/schema/context   
+           http://www.springframework.org/schema/context/spring-context-3.1.xsd  
+           http://www.springframework.org/schema/mvc   
+           http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+    
+     
+    
+   	<mvc:annotation-driven/>	
+	<mvc:default-servlet-handler/>
+    
+    <!-- 启动扫描所有的controller -->
+    <context:component-scan base-package="com.travel.ticktes.action"/>
+   
+    <!-- 启用注解 -->
+	<context:annotation-config />
+	<!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
+	<context:component-scan base-package="com.travel.ticktes">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+  
+  
+    <!-- 配置js，css等静态文件直接映射到对应的文件夹，不被DispatcherServlet处理 -->
+    <mvc:resources location="/WEB-INF/resources/**" mapping="/resources"/>
+    <mvc:resources mapping="/javascript/**" location="/static_resources/javascript/"/>  
+    <mvc:resources mapping="/styles/**" location="/static/css/"/>  
+    <mvc:resources mapping="/images/**" location="/static/images/"/> 
+    
+    <!-- 配置页面访问地址www.xxx.com/about返回的静态html文件 -->
+    <mvc:resources mapping="/about/**" location="/WEB-INF/html/"/>
+    <!-- 走servlet的默认配置，先走默认的web.xml配置的servlet，没有的话才找对应controller -->
+    <mvc:default-servlet-handler />
+    
+    <!-- jsp页面解析器，当Controller返回XXX字符串时，先通过拦截器，然后该类就会在jsp/目录下，查找XXX.jsp文件-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    	<property name="prefix" value="/WEB-INF/jsp/"></property>
+    	<property name="suffix" value=".jsp"></property>
+    </bean>
+    
+    <bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding">
+			<value>UTF-8</value>
+		</property>
+		<property name="maxUploadSize">
+			<value>32505856</value><!-- 上传文件大小限制为31M，31*1024*1024 -->
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+    
+</beans>

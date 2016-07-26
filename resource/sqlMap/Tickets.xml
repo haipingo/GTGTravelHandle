@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ticktes">
+	<sql id="queryDataFilter">
+		<!--出发站编码-->
+	 	<isNotEmpty prepend="and" property="id">
+			id=#id#
+		</isNotEmpty>
+	
+		<!--出发站编码-->
+	 	<isNotEmpty prepend="and" property="departureStation">
+			areaDepot=#departureStation#
+		</isNotEmpty>
+		
+		<!--到达站编码-->
+		<isNotEmpty prepend="and" property="destinationStation">
+			stationData like CONCAT('%',#destinationStation#,'%' )  
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="and"  property="departureDate">
+			SUBSTRING(TIME,1,10)=#departureDate#
+		</isNotEmpty>
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	<!--2.查询临时表中的数据，根据表名，来源系统名称分出实体-->
+	<select id="querySchemerefresh" resultClass="java.util.HashMap">
+		<![CDATA[
+			SELECT 
+				id,
+				no,
+				level,
+				DATE_FORMAT(`TIME`,'%m月%d日') date,
+				DATE_FORMAT(`TIME`,'%H:%i') time,
+				DATE_FORMAT(`TIME`,'%Y%m%d') szDate,
+				TIME departureTime,
+				name,
+				remain,
+				fare,
+				terminalCode,
+				ownerDepot,
+				areaDepot,
+				area,
+				'省汽车客运站' as localDepot 
+			FROM schemerefresh 
+			WHERE STATUS=0  AND 
+			DATE_FORMAT((SELECT DATE_ADD(NOW(), INTERVAL 1 HOUR)),'%Y-%m-%d %H:%i:%s')<TIME  
+		]]>
+		<dynamic prepend="AND">
+			<include refid="queryDataFilter"/>
+		</dynamic>
+		ORDER BY TIME
+	</select>
+	
+	<!-- 自动生成条形码 -->
+	<parameterMap class="map" id="swapParameters"> 
+		<parameter property="autoBar"  javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT"/> 
+	</parameterMap> 
+ 
+	<procedure id="autoBarCode" parameterMap="swapParameters"> 
+		{call autoBarCodeAdd(?)}  
+	</procedure> 
+	
+	<procedure id="autoAlipayCode" parameterMap="swapParameters"> 
+		{call autoAlipayAdd(?)}  
+	</procedure>
+	
+	<procedure id="autoTicketCode" parameterMap="swapParameters"> 
+		{call autoTicketAdd(?)}  
+	</procedure>
+	
+	
+	
+	
+</sqlMap>
